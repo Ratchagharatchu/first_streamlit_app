@@ -53,3 +53,5 @@ if streamlit.button('Add Fruit'):
     except Exception as e:
         streamlit.error(f'Error adding {new_fruit} to the list: {str(e)}')
 
+my_cur.execute("insert into fruit_load_list values('from streamlit')")
+
