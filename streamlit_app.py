@@ -41,3 +41,15 @@ my_data_row = my_cur.fetchall()
 streamlit.text("The fruit_load_list contains:")
 streamlit.dataframe(my_data_row)
 
+# Section to allow the user to add a fruit to the list
+streamlit.header("Add a New Fruit to the List")
+new_fruit = streamlit.text_input('Enter a new fruit:')
+if streamlit.button('Add Fruit'):
+    # Add the new fruit to the Snowflake database
+    try:
+        my_cur.execute("INSERT INTO fruit_load_list (fruit_name) VALUES (%s)", (new_fruit,))
+        my_cnx.commit()
+        streamlit.success(f'{new_fruit} has been added to the list!')
+    except Exception as e:
+        streamlit.error(f'Error adding {new_fruit} to the list: {str(e)}')
+
