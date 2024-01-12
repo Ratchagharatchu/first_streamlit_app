@@ -62,15 +62,22 @@ if streamlit.button('Add Fruit'):
     except Exception as e:
         streamlit.error(f'Error adding {new_fruit} to the list: {str(e)}')
 
+# Function to get the fruit list from Snowflake
+def get_fruit_list():
+    with my_cnx.cursor() as cursor:
+        cursor.execute("SELECT * FROM fruit_load_list")
+        fruit_list = cursor.fetchall()
+    return fruit_list
+
 # Display the fruit list
 streamlit.header("View our Fruit List - Add Your Favorites!")
 if streamlit.button("Get Fruit List"):
     fruit_list_data = get_fruit_list()
-    if not fruit_list_data:
-        streamlit.warning("The fruit list is empty.")
-    else:
+    if fruit_list_data is not None and len(fruit_list_data) > 0:
         fruit_df = pd.DataFrame(fruit_list_data, columns=["Fruit ID", "Fruit Name"])
         streamlit.dataframe(fruit_df)
+    else:
+        streamlit.warning("The fruit list is empty.")
 
 #Allow the end user to add a fruit to the list
 def insert_row_snowflake(new_fruit):
