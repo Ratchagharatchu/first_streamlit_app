@@ -62,12 +62,15 @@ if streamlit.button('Add Fruit'):
     except Exception as e:
         streamlit.error(f'Error adding {new_fruit} to the list: {str(e)}')
 
-# Function to get the fruit list from Snowflake
 def get_fruit_list():
-    with my_cnx.cursor() as cursor:
-        cursor.execute("SELECT * FROM fruit_load_list")
-        fruit_list = cursor.fetchall()
-    return fruit_list
+    try:
+        with my_cnx.cursor() as cursor:
+            cursor.execute("SELECT * FROM fruit_load_list")
+            fruit_list = cursor.fetchall()
+        return fruit_list
+    except snowflake.connector.errors.ProgrammingError as e:
+        streamlit.error(f"Error executing Snowflake query: {e}")
+        return None
 
 # Display the fruit list
 streamlit.header("View our Fruit List - Add Your Favorites!")
